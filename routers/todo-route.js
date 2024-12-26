@@ -8,7 +8,7 @@ dotenv.config();
 const router = express.Router();
 
 //creates task
-router.post("/createtask", verifyJsonWebToken, async (req, res) => {
+router.post("/create", verifyJsonWebToken, async (req, res) => {
   const userId = req.id;
   const { title, description } = req.body;
   const newTodo = new todoModel({ title, description, user: userId });
@@ -17,7 +17,7 @@ router.post("/createtask", verifyJsonWebToken, async (req, res) => {
 });
 
 //changes the task status
-router.put("/updatestatus", verifyJsonWebToken, async (req, res) => {
+router.put("/update", verifyJsonWebToken, async (req, res) => {
   const { todoId } = req.body;
   const todoExists = await todoModel.findOne({ _id: todoId });
   if (todoExists) {
@@ -48,7 +48,7 @@ router.put("/edit", verifyJsonWebToken, async (req, res) => {
 });
 
 //gets specific todo
-router.get("/gettodo", verifyJsonWebToken, async (req, res) => {
+router.get("/get", verifyJsonWebToken, async (req, res) => {
   const { todoId } = req.body;
   const todoExists = await todoModel.findOne({ _id: todoId });
   if (todoExists) {
@@ -58,7 +58,7 @@ router.get("/gettodo", verifyJsonWebToken, async (req, res) => {
 });
 
 //gets all tasks
-router.get("/alltodo", verifyJsonWebToken, async (req, res) => {
+router.get("/all", verifyJsonWebToken, async (req, res) => {
   const { userId } = req.id;
   const alltasks = [];
   (await todoModel.find({ userId })).forEach((each) => {

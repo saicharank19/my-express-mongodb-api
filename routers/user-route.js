@@ -10,7 +10,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.post("/createuser", async (req, res) => {
+router.post("/register", async (req, res) => {
   const { email, username, password } = req.body;
 
   // Check if user already exists
@@ -42,7 +42,7 @@ router.post("/createuser", async (req, res) => {
   }
 });
 
-router.post("/userlogin", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const userFound = await userModel.findOne({ username });
 
@@ -79,7 +79,7 @@ function verifyJsonWebToken(req, res, next) {
   }
 }
 
-router.delete("/deleteuser", verifyJsonWebToken, async (req, res) => {
+router.delete("/delete", verifyJsonWebToken, async (req, res) => {
   const { username, password } = req.body;
 
   // Check if user already exists
