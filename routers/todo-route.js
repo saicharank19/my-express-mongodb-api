@@ -10,8 +10,8 @@ const router = express.Router();
 //creates task
 router.post("/create", verifyJsonWebToken, async (req, res) => {
   const userId = req.id;
-  const { title, description } = req.body;
-  const newTodo = new todoModel({ title, description, user: userId });
+  const { title } = req.body;
+  const newTodo = new todoModel({ title, user: userId });
   await newTodo.save();
   return res.status(201).json({ message: "todo created successfully" });
 });
@@ -26,7 +26,7 @@ router.put("/update", verifyJsonWebToken, async (req, res) => {
     return res
       .status(200)
       .json(
-        `${todoExists.description} marked as ${
+        `${todoExists.title} marked as ${
           todoExists.isDone ? "completed" : "not completed"
         }`
       );
@@ -34,13 +34,12 @@ router.put("/update", verifyJsonWebToken, async (req, res) => {
   return res.json({ message: "todo not found" });
 });
 
-//edits title and description
+//edits title
 router.put("/edit", verifyJsonWebToken, async (req, res) => {
-  const { todoId, title, description } = req.body;
+  const { todoId, title } = req.body;
   const todoExists = await todoModel.findOne({ _id: todoId });
   if (todoExists) {
     todoExists.title = title;
-    todoExists.description = description;
     todoExists.save();
     return res.status(200).json(todoExists);
   }
@@ -59,11 +58,13 @@ router.get("/get", verifyJsonWebToken, async (req, res) => {
 
 //gets all tasks
 router.get("/all", verifyJsonWebToken, async (req, res) => {
-  const { userId } = req.id;
+  const userId = req.id;
+
   const alltasks = [];
-  (await todoModel.find({ userId })).forEach((each) => {
-    alltasks.push({ title: each.title, description: each.description });
+  (await todoModel.find({ user: userId })).forEach((each) => {
+    alltasks.push({ title: each.title });
   });
+
   return res.status(201).json(alltasks);
 });
 
@@ -90,7 +91,6 @@ router.get("/today", verifyJsonWebToken, async (req, res) => {
   // Return the filtered tasks
   const tasks = todayTasks.map((each) => ({
     title: each.title,
-    description: each.description,
   }));
 
   return res.status(200).json(tasks);
@@ -103,7 +103,7 @@ router.get("/completed", verifyJsonWebToken, async (req, res) => {
   (await todoModel.find({ userId, isDone: true })).forEach((each) => {
     completedtasks.push({
       title: each.title,
-      description: each.description,
+
       isDone: each.isDone,
     });
   });
@@ -117,7 +117,7 @@ router.get("/incomplete", verifyJsonWebToken, async (req, res) => {
   (await todoModel.find({ userId, isDone: false })).forEach((each) => {
     incompletetasks.push({
       title: each.title,
-      description: each.description,
+
       isDone: each.isDone,
     });
   });
