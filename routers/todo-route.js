@@ -62,7 +62,7 @@ router.get("/all", verifyJsonWebToken, async (req, res) => {
 
   const alltasks = [];
   (await todoModel.find({ user: userId })).forEach((each) => {
-    alltasks.push({ title: each.title });
+    alltasks.push({ title: each.title, status: each.isDone, todoId: each._id });
   });
 
   return res.status(201).json(alltasks);
