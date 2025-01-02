@@ -43,7 +43,7 @@ router.put(
   }
 );
 
-//edits title and description
+//edits title
 router.put(
   "/edit",
   verifyJsonWebToken,
@@ -81,7 +81,11 @@ router.get(
     const { userId } = req.id;
     const alltasks: TitleList[] = [];
     (await todoModel.find({ userId })).forEach((each) => {
-      alltasks.push({ title: each.title });
+      alltasks.push({
+        title: each.title,
+        status: each.isDone,
+        todoId: each._id,
+      });
     });
     return res.status(201).json(alltasks);
   }
