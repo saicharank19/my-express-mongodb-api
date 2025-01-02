@@ -73,22 +73,28 @@ router.post(
     return res.json({ message: "user not found" });
   }
 );
+type isVerifiedType = {
+  id: string;
+};
 
 const verifyJsonWebToken: RequestHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<any> | undefined => {
+): any => {
   try {
     const authHeader = req.headers.authorization;
     console.log(authHeader);
     const token = authHeader && authHeader.split(" ")[1];
 
     if (token) {
-      const isVerified = jwt.verify(token, process.env.SECRET as string);
+      const isVerified = jwt.verify(
+        token,
+        process.env.SECRET as string
+      ) as isVerifiedType;
 
       if (isVerified) {
-        req.id = isVerified.id;
+        req.headers["id"] = isVerified.id!;
         next();
       } else {
         return res.status(400).json({ message: "unauthorized to access" });

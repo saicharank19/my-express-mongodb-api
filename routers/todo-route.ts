@@ -13,7 +13,7 @@ router.post(
   "/create",
   verifyJsonWebToken,
   async (req: Request<{}, {}, Todo, {}>, res: Response): Promise<any> => {
-    const userId = req.id;
+    const userId = req.headers.id;
     const { title } = req.body;
     const newTodo = new todoModel({ title, user: userId });
     await newTodo.save();
@@ -78,7 +78,7 @@ router.get(
   "/all",
   verifyJsonWebToken,
   async (req: Request<{}, {}, Todo, {}>, res: Response): Promise<any> => {
-    const { userId } = req.id;
+    const userId = req.headers.id;
     const alltasks: TitleList[] = [];
     (await todoModel.find({ userId })).forEach((each) => {
       alltasks.push({
@@ -96,7 +96,7 @@ router.get(
   "/today",
   verifyJsonWebToken,
   async (req: Request, res: Response): Promise<any> => {
-    const { userId } = req.id;
+    const userId = req.headers.id;
 
     // Get today's date at 00:00:00 and end of today at 23:59:59
     const startOfToday = new Date();
@@ -128,7 +128,7 @@ router.get(
   "/completed",
   verifyJsonWebToken,
   async (req: Request, res: Response): Promise<any> => {
-    const { userId } = req.id;
+    const userId = req.headers.id;
     const completedtasks: Tasks[] = [];
     (await todoModel.find({ userId, isDone: true })).forEach((each) => {
       completedtasks.push({
@@ -145,7 +145,7 @@ router.get(
   "/incomplete",
   verifyJsonWebToken,
   async (req: Request, res: Response): Promise<any> => {
-    const { userId } = req.id;
+    const userId = req.headers.id;
     const incompletetasks: Tasks[] = [];
     (await todoModel.find({ userId, isDone: false })).forEach((each) => {
       incompletetasks.push({

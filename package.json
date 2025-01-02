@@ -9,9 +9,8 @@
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.0"
   },
-  "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "tsc && node dist/index.js"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
